@@ -166,23 +166,87 @@ fun SetupAlarmScreen(viewModel: AlarmViewModel? = null, alarm: AlarmEntity? = nu
         ) {
             Spacer(modifier = Modifier.height(24.dp))
             
-            val colors = TimePickerDefaults.colors(
-                clockDialColor = surfaceContainerHighDark,
-                selectorColor = primaryDark,
-                containerColor = backgroundDark,
-                periodSelectorBorderColor = outlineDark,
-                periodSelectorSelectedContainerColor = primaryContainerDark,
-                periodSelectorSelectedContentColor = onPrimaryContainerDark,
-                timeSelectorSelectedContainerColor = primaryContainerDark,
-                timeSelectorSelectedContentColor = onPrimaryContainerDark,
-                timeSelectorUnselectedContainerColor = surfaceContainerHighDark,
-                timeSelectorUnselectedContentColor = onSurfaceDark
-            )
+            var showTimePickerDialog by remember { mutableStateOf(false) }
+            var isKeyboardMode by remember { mutableStateOf(useKeyboardTimeInput) }
 
-            if (useKeyboardTimeInput) {
-                TimeInput(state = timePickerState, colors = colors)
-            } else {
-                TimePicker(state = timePickerState, colors = colors)
+            if (showTimePickerDialog) {
+                AlertDialog(
+                    onDismissRequest = { showTimePickerDialog = false },
+                    title = { Text("Set Alarm Time", color = onSurfaceDark) },
+                    text = {
+                        val colors = TimePickerDefaults.colors(
+                            clockDialColor = surfaceContainerHighDark,
+                            selectorColor = primaryDark,
+                            containerColor = backgroundDark,
+                            periodSelectorBorderColor = outlineDark,
+                            periodSelectorSelectedContainerColor = primaryContainerDark,
+                            periodSelectorSelectedContentColor = onPrimaryContainerDark,
+                            timeSelectorSelectedContainerColor = primaryContainerDark,
+                            timeSelectorSelectedContentColor = onPrimaryContainerDark,
+                            timeSelectorUnselectedContainerColor = surfaceContainerHighDark,
+                            timeSelectorUnselectedContentColor = onSurfaceDark
+                        )
+                        if (isKeyboardMode) {
+                            TimeInput(state = timePickerState, colors = colors)
+                        } else {
+                            TimePicker(state = timePickerState, colors = colors)
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { showTimePickerDialog = false }) {
+                            Text("OK", color = primaryDark)
+                        }
+                    },
+                    containerColor = surfaceContainerHighDark
+                )
+            }
+            
+            val amPm = if (timePickerState.hour >= 12) "PM" else "AM"
+            val displayHour = if (timePickerState.hour % 12 == 0) 12 else timePickerState.hour % 12
+            val timeStr = String.format("%02d:%02d", displayHour, timePickerState.minute)
+            
+            Text(
+                text = timeStr,
+                fontSize = 80.sp,
+                fontWeight = FontWeight.Medium,
+                color = primaryDark
+            )
+            Text(
+                text = amPm,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Normal,
+                color = onSurfaceVariantDark
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Surface(
+                shape = CircleShape,
+                color = surfaceContainerHighDark,
+                modifier = Modifier.height(56.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = { 
+                        isKeyboardMode = false
+                        showTimePickerDialog = true 
+                    }) {
+                        Icon(Icons.Outlined.Schedule, contentDescription = "Clock Mode", tint = onSurfaceDark)
+                    }
+                    
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Box(modifier = Modifier.width(1.dp).height(24.dp).background(outlineVariantDark))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    
+                    IconButton(onClick = { 
+                        isKeyboardMode = true
+                        showTimePickerDialog = true 
+                    }) {
+                        Icon(Icons.Outlined.Keyboard, contentDescription = "Keyboard Mode", tint = onSurfaceDark)
+                    }
+                }
             }
             
             Spacer(modifier = Modifier.height(32.dp))
@@ -440,8 +504,13 @@ fun SetupAlarmScreen(viewModel: AlarmViewModel? = null, alarm: AlarmEntity? = nu
                 onDismissRequest = { showCameraObjectDialog = false },
                 title = { Text("Select Camera Target", color = onSurfaceDark) },
                 text = {
-                    Column {
-                        listOf("Sink", "Chair", "Mug", "Keyboard", "Shoe", "Toothbrush").forEach { target ->
+                    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                        val allTargets = listOf(
+                            "Sink", "Chair", "Mug", "Keyboard", "Shoe", "Toothbrush", 
+                            "Laptop", "Television", "Bottle", "Cup", "Spoon", "Fork", 
+                            "Plate", "Bed", "Door", "Window", "Book", "Pen"
+                        )
+                        allTargets.forEach { target ->
                             Row(modifier = Modifier.fillMaxWidth().clickable { 
                                 cameraObject = target
                                 showCameraObjectDialog = false

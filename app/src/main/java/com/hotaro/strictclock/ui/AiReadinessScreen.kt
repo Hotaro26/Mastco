@@ -93,7 +93,11 @@ fun AiReadinessScreen(onBack: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(16.dp))
             
-            val targets = listOf("Sink", "Chair", "Mug", "Keyboard", "Shoe", "Toothbrush")
+            val targets = listOf(
+                "Sink", "Chair", "Mug", "Keyboard", "Shoe", "Toothbrush", 
+                "Laptop", "Television", "Bottle", "Cup", "Spoon", "Fork", 
+                "Plate", "Bed", "Door", "Window", "Book", "Pen"
+            )
             
             targets.forEach { target ->
                 Row(
