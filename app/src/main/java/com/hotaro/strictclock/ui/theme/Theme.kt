@@ -225,7 +225,7 @@ fun StrictClockTheme(
         }
     }
 
-    val colorScheme = if (isAmoled) {
+    val colorScheme = if (isAmoled && useDarkTheme) {
         baseColorScheme.copy(
             background = androidx.compose.ui.graphics.Color.Black,
             surface = androidx.compose.ui.graphics.Color.Black

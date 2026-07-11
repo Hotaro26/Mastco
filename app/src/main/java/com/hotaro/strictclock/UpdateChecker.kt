@@ -16,7 +16,7 @@ object UpdateChecker {
     suspend fun check(context: Context, currentVersionName: String) {
         withContext(Dispatchers.IO) {
             try {
-                val url = URL("https://api.github.com/repos/Hotaro26/Matco/releases/latest")
+                val url = URL("https://api.github.com/repos/Hotaro26/Mastco/releases/latest")
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
                 connection.connectTimeout = 5000
@@ -31,7 +31,10 @@ object UpdateChecker {
                     val latestVersion = tagName.removePrefix("v")
                     val current = currentVersionName.removePrefix("v")
                     
-                    if (latestVersion != current) {
+                    val latestNum = latestVersion.toDoubleOrNull() ?: 0.0
+                    val currentNum = current.toDoubleOrNull() ?: 0.0
+                    
+                    if (latestNum > currentNum) {
                         Handler(Looper.getMainLooper()).post {
                             AlertDialog.Builder(context)
                                 .setTitle("Update Available")

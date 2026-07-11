@@ -63,9 +63,10 @@ fun AboutScreen(onBack: () -> Unit) {
             Spacer(modifier = Modifier.height(32.dp))
             
             Image(
-                painter = painterResource(id = R.drawable.matco_icon),
+                painter = painterResource(id = R.drawable.about_image),
                 contentDescription = "App Icon",
-                modifier = Modifier.size(80.dp).clip(CircleShape)
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                modifier = Modifier.size(100.dp).clip(CircleShape)
             )
             
             Spacer(modifier = Modifier.height(16.dp))

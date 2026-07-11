@@ -566,16 +566,18 @@ fun SettingsRow(icon: ImageVector, title: String, subtitle: String, showArrow: B
 }
 
 @Composable
-fun SettingsRowSwitch(icon: ImageVector, title: String, subtitle: String, checked: Boolean, shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(24.dp), onCheckedChange: (Boolean) -> Unit = {}) {
-    Card(shape = shape, colors = CardDefaults.cardColors(containerColor = surfaceContainerHighDark), modifier = Modifier.fillMaxWidth()) {
+fun SettingsRowSwitch(icon: ImageVector, title: String, subtitle: String, checked: Boolean, enabled: Boolean = true, onDisabledClick: () -> Unit = {}, shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(24.dp), onCheckedChange: (Boolean) -> Unit = {}) {
+    Card(shape = shape, colors = CardDefaults.cardColors(containerColor = surfaceContainerHighDark), modifier = Modifier.fillMaxWidth().clickable {
+        if (!enabled) onDisabledClick() else onCheckedChange(!checked)
+    }) {
         Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, contentDescription = null, tint = onSurfaceVariantDark)
+            Icon(icon, contentDescription = null, tint = if (enabled) onSurfaceVariantDark else onSurfaceVariantDark.copy(alpha = 0.5f))
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, color = onSurfaceDark)
-                Text(subtitle, color = onSurfaceVariantDark, fontSize = 14.sp)
+                Text(title, color = if (enabled) onSurfaceDark else onSurfaceDark.copy(alpha = 0.5f))
+                Text(subtitle, color = if (enabled) onSurfaceVariantDark else onSurfaceVariantDark.copy(alpha = 0.5f), fontSize = 14.sp)
             }
-            Switch(checked = checked, onCheckedChange = onCheckedChange, colors = SwitchDefaults.colors(checkedThumbColor = primaryDark, checkedTrackColor = primaryContainerDark))
+            Switch(checked = checked, enabled = enabled, onCheckedChange = { if (enabled) onCheckedChange(it) }, colors = SwitchDefaults.colors(checkedThumbColor = primaryDark, checkedTrackColor = primaryContainerDark))
         }
     }
 }
