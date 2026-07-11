@@ -549,8 +549,8 @@ fun SetupAlarmScreen(viewModel: AlarmViewModel? = null, alarm: AlarmEntity? = nu
 }
 
 @Composable
-fun SettingsRow(icon: ImageVector, title: String, subtitle: String, showArrow: Boolean = false, onClick: () -> Unit = {}) {
-    Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = surfaceContainerHighDark), modifier = Modifier.fillMaxWidth().clickable { onClick() }) {
+fun SettingsRow(icon: ImageVector, title: String, subtitle: String, showArrow: Boolean = false, shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(24.dp), onClick: () -> Unit = {}) {
+    Card(shape = shape, colors = CardDefaults.cardColors(containerColor = surfaceContainerHighDark), modifier = Modifier.fillMaxWidth().clickable { onClick() }) {
         Row(modifier = Modifier.padding(16.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Icon(icon, contentDescription = null, tint = onSurfaceVariantDark)
             Spacer(modifier = Modifier.width(16.dp))
@@ -566,8 +566,8 @@ fun SettingsRow(icon: ImageVector, title: String, subtitle: String, showArrow: B
 }
 
 @Composable
-fun SettingsRowSwitch(icon: ImageVector, title: String, subtitle: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit = {}) {
-    Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = surfaceContainerHighDark), modifier = Modifier.fillMaxWidth()) {
+fun SettingsRowSwitch(icon: ImageVector, title: String, subtitle: String, checked: Boolean, shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(24.dp), onCheckedChange: (Boolean) -> Unit = {}) {
+    Card(shape = shape, colors = CardDefaults.cardColors(containerColor = surfaceContainerHighDark), modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Icon(icon, contentDescription = null, tint = onSurfaceVariantDark)
             Spacer(modifier = Modifier.width(16.dp))

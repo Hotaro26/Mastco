@@ -89,46 +89,48 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(32.dp))
             
             // Alarm Behavior
-            Text("Alarm Behavior", color = onSurfaceDark, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            Text("Alarm Behavior", color = onSurfaceDark, fontSize = 16.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(start = 8.dp))
             Spacer(modifier = Modifier.height(16.dp))
-            SettingsRow(icon = Icons.Outlined.Snooze, title = "Zen Mode", subtitle = "Manage snoozing", showArrow = true, onClick = onNavigateToZenMode)
-            Spacer(modifier = Modifier.height(8.dp))
+            SettingsRow(icon = Icons.Outlined.Snooze, title = "Zen Mode", subtitle = "Manage snoozing", showArrow = true, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomStart = 4.dp, bottomEnd = 4.dp), onClick = onNavigateToZenMode)
+            Spacer(modifier = Modifier.height(2.dp))
             val isAmoled by ThemeManager.isAmoled.collectAsState()
-            SettingsRowSwitch(icon = Icons.Outlined.DarkMode, title = "Amoled Mode", subtitle = "True black background", checked = isAmoled, onCheckedChange = { ThemeManager.setAmoled(it) })
+            SettingsRowSwitch(icon = Icons.Outlined.DarkMode, title = "Amoled Mode", subtitle = "True black background", checked = isAmoled, shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = 24.dp, bottomEnd = 24.dp), onCheckedChange = { ThemeManager.setAmoled(it) })
             
             Spacer(modifier = Modifier.height(32.dp))
             
             // Strict Tasks
-            Text("Strict Tasks", color = onSurfaceDark, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            Text("Strict Tasks", color = onSurfaceDark, fontSize = 16.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(start = 8.dp))
             Spacer(modifier = Modifier.height(16.dp))
-            SettingsRow(icon = Icons.Outlined.Calculate, title = "Math Settings", subtitle = "Customise math challenges", showArrow = true, onClick = onNavigateToMathSettings)
-            Spacer(modifier = Modifier.height(8.dp))
-            SettingsRow(icon = Icons.Outlined.FitnessCenter, title = "Task Difficulty", subtitle = "Intermediate level", showArrow = true)
-            Spacer(modifier = Modifier.height(8.dp))
-            SettingsRow(icon = Icons.Outlined.QrCodeScanner, title = "QR Management", subtitle = "Manage saved codes", showArrow = true, onClick = onNavigateToQrManagement)
+            SettingsRow(icon = Icons.Outlined.Calculate, title = "Math Settings", subtitle = "Customise math challenges", showArrow = true, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomStart = 4.dp, bottomEnd = 4.dp), onClick = onNavigateToMathSettings)
+            Spacer(modifier = Modifier.height(2.dp))
+            SettingsRow(icon = Icons.Outlined.FitnessCenter, title = "Task Difficulty", subtitle = "Intermediate level", showArrow = true, shape = RoundedCornerShape(4.dp))
+            Spacer(modifier = Modifier.height(2.dp))
+            SettingsRow(icon = Icons.Outlined.QrCodeScanner, title = "QR Management", subtitle = "Manage saved codes", showArrow = true, shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = 24.dp, bottomEnd = 24.dp), onClick = onNavigateToQrManagement)
             
             Spacer(modifier = Modifier.height(32.dp))
             
             // Appearance
-            Text("Appearance", color = onSurfaceDark, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            Text("Appearance", color = onSurfaceDark, fontSize = 16.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(start = 8.dp))
             Spacer(modifier = Modifier.height(16.dp))
             SettingsRow(
                 icon = Icons.Outlined.DashboardCustomize,
                 title = "Customisation",
                 subtitle = "Input preferences and styles",
                 showArrow = true,
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomStart = 4.dp, bottomEnd = 4.dp),
                 onClick = onNavigateToCustomisation
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(2.dp))
             val activeScheme by ThemeManager.activeScheme.collectAsState()
             SettingsRow(
                 icon = Icons.Outlined.Palette, 
                 title = "Color Scheme", 
                 subtitle = activeScheme, 
                 showArrow = true,
+                shape = RoundedCornerShape(4.dp),
                 onClick = onNavigateToColorScheme
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             val themeMode by ThemeManager.themeMode.collectAsState()
             SettingsRow(
@@ -136,12 +138,13 @@ fun SettingsScreen(
                 title = "Theme Mode", 
                 subtitle = themeMode, 
                 showArrow = true,
+                shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = 24.dp, bottomEnd = 24.dp),
                 onClick = onNavigateToThemeMode
             )
             Spacer(modifier = Modifier.height(32.dp))
             
             // About
-            Text("About", color = onSurfaceDark, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            Text("About", color = onSurfaceDark, fontSize = 16.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(start = 8.dp))
             Spacer(modifier = Modifier.height(16.dp))
             SettingsRow(
                 icon = Icons.Outlined.Info, 
