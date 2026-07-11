@@ -94,7 +94,14 @@ fun SettingsScreen(
             SettingsRow(icon = Icons.Outlined.Snooze, title = "Zen Mode", subtitle = "Manage snoozing", showArrow = true, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomStart = 4.dp, bottomEnd = 4.dp), onClick = onNavigateToZenMode)
             Spacer(modifier = Modifier.height(2.dp))
             val isAmoled by ThemeManager.isAmoled.collectAsState()
-            SettingsRowSwitch(icon = Icons.Outlined.DarkMode, title = "Amoled Mode", subtitle = "True black background", checked = isAmoled, shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = 24.dp, bottomEnd = 24.dp), onCheckedChange = { ThemeManager.setAmoled(it) })
+            val themeModeValue = ThemeManager.themeMode.collectAsState().value
+            SettingsRowSwitch(icon = Icons.Outlined.DarkMode, title = "Amoled Mode", subtitle = "True black background", checked = isAmoled, shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = 24.dp, bottomEnd = 24.dp), onCheckedChange = { 
+                if (it && themeModeValue == "Light Mode") {
+                    android.widget.Toast.makeText(context, "AMOLED mode cannot be used in Light mode", android.widget.Toast.LENGTH_SHORT).show()
+                } else {
+                    ThemeManager.setAmoled(it) 
+                }
+            })
             
             Spacer(modifier = Modifier.height(32.dp))
             

@@ -46,5 +46,8 @@ object ThemeManager {
     fun setThemeMode(mode: String) {
         _themeMode.value = mode
         scope?.launch { repository?.saveThemeMode(mode) }
+        if (mode == "Light Mode" && _isAmoled.value) {
+            setAmoled(false)
+        }
     }
 }
