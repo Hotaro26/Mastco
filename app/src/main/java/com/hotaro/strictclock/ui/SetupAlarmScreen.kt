@@ -403,7 +403,7 @@ fun SetupAlarmScreen(viewModel: AlarmViewModel? = null, alarm: AlarmEntity? = nu
         }
 
         if (showMathConfigDialog) {
-            val ops = mathOperations.split(",").filter { it.isNotEmpty() }.toMutableSet()
+            var ops by remember { mutableStateOf(mathOperations.split(",").filter { it.isNotEmpty() }.toSet()) }
             var currentDifficulty by remember { mutableStateOf(mathDifficulty) }
 
             AlertDialog(
@@ -420,22 +420,22 @@ fun SetupAlarmScreen(viewModel: AlarmViewModel? = null, alarm: AlarmEntity? = nu
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             FilterChip(
                                 selected = ops.contains("Addition"),
-                                onClick = { if (ops.contains("Addition")) ops.remove("Addition") else ops.add("Addition") },
+                                onClick = { ops = if (ops.contains("Addition")) ops - "Addition" else ops + "Addition" },
                                 label = { Text("+") }
                             )
                             FilterChip(
                                 selected = ops.contains("Subtraction"),
-                                onClick = { if (ops.contains("Subtraction")) ops.remove("Subtraction") else ops.add("Subtraction") },
+                                onClick = { ops = if (ops.contains("Subtraction")) ops - "Subtraction" else ops + "Subtraction" },
                                 label = { Text("-") }
                             )
                             FilterChip(
                                 selected = ops.contains("Multiplication"),
-                                onClick = { if (ops.contains("Multiplication")) ops.remove("Multiplication") else ops.add("Multiplication") },
+                                onClick = { ops = if (ops.contains("Multiplication")) ops - "Multiplication" else ops + "Multiplication" },
                                 label = { Text("×") }
                             )
                             FilterChip(
                                 selected = ops.contains("Division"),
-                                onClick = { if (ops.contains("Division")) ops.remove("Division") else ops.add("Division") },
+                                onClick = { ops = if (ops.contains("Division")) ops - "Division" else ops + "Division" },
                                 label = { Text("÷") }
                             )
                         }
@@ -470,7 +470,7 @@ fun SetupAlarmScreen(viewModel: AlarmViewModel? = null, alarm: AlarmEntity? = nu
                 },
                 confirmButton = {
                     TextButton(onClick = { 
-                        if (ops.isEmpty()) ops.add("Addition")
+                        if (ops.isEmpty()) ops = setOf("Addition")
                         mathOperations = ops.joinToString(",")
                         mathDifficulty = currentDifficulty
                         showMathConfigDialog = false 
