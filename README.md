@@ -4,6 +4,7 @@ sup! welcome to Mascot (formerly mastco) — it's basically this evil open-sourc
 
 Mascot makes you do annoying stuff like solving math problems, scanning random QR codes, or even walking to your bathroom to take a picture of your sink just to turn off the alarm. the AI object detection is all on-device so it's super fast and doesn't steal your data.
 
+oh, and if you hate oversleeping and actually find this app useful, dropping a star on the repo would be sick.
 ### What's under the hood?
 
 I built this thing using some pretty cool stuff:
