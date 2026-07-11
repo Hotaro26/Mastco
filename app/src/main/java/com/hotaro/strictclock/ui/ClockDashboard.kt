@@ -17,6 +17,7 @@ import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Calculate
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -90,30 +91,83 @@ fun ClockDashboard(viewModel: AlarmViewModel? = null, onNavigateToSetup: () -> U
             
             // System Clock removed from here
             
-            // Dynamic Alarm Cards
-            items(alarms) { alarm ->
+            items(alarms, key = { it.id }) { alarm ->
+                var showDeleteConfirm by remember { mutableStateOf(false) }
+                val dismissState = rememberSwipeToDismissBoxState(
+                    confirmValueChange = {
+                        if (it == SwipeToDismissBoxValue.EndToStart || it == SwipeToDismissBoxValue.StartToEnd) {
+                            showDeleteConfirm = true
+                            false
+                        } else {
+                            false
+                        }
+                    }
+                )
+                
+                if (showDeleteConfirm) {
+                    AlertDialog(
+                        onDismissRequest = { showDeleteConfirm = false },
+                        title = { Text("Delete Alarm", color = onSurfaceDark) },
+                        text = { Text("Are you sure you want to delete this alarm?", color = onSurfaceVariantDark) },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                viewModel?.delete(alarm)
+                                showDeleteConfirm = false
+                            }) {
+                                Text("Delete", color = errorDark)
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { showDeleteConfirm = false }) {
+                                Text("Cancel", color = primaryDark)
+                            }
+                        },
+                        containerColor = surfaceContainerHighDark,
+                        titleContentColor = onSurfaceDark,
+                        textContentColor = onSurfaceVariantDark
+                    )
+                }
+                
                 val amPm = if (alarm.timeHour >= 12) "PM" else "AM"
                 val displayHour = if (alarm.timeHour % 12 == 0) 12 else alarm.timeHour % 12
                 val timeStr = String.format("%02d:%02d", displayHour, alarm.timeMinute)
                 
                 val icon = when (alarm.challengeType) {
                     "Math" -> Icons.Outlined.Calculate
-                    "QR" -> Icons.Outlined.QrCodeScanner
+                    "QR Code", "QR" -> Icons.Outlined.QrCodeScanner
                     else -> null
                 }
                 
-                AlarmCard(
-                    time = timeStr,
-                    amPm = amPm,
-                    days = alarm.daysOfWeek,
-                    challengeIcon = icon,
-                    challengeText = alarm.challengeType + " Challenge",
-                    isActive = alarm.isActive,
-                    onToggle = { isChecked ->
-                        viewModel?.update(alarm.copy(isActive = isChecked))
-                    },
-                    onClick = { onEditAlarm(alarm) }
-                )
+                SwipeToDismissBox(
+                    state = dismissState,
+                    backgroundContent = {
+                        val color = errorContainerDark
+                        val alignment = if (dismissState.dismissDirection == SwipeToDismissBoxValue.StartToEnd) Alignment.CenterStart else Alignment.CenterEnd
+                        
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(color, RoundedCornerShape(28.dp))
+                                .padding(horizontal = 24.dp),
+                            contentAlignment = alignment
+                        ) {
+                            Icon(Icons.Outlined.Delete, contentDescription = "Delete", tint = onErrorContainerDark, modifier = Modifier.size(32.dp))
+                        }
+                    }
+                ) {
+                    AlarmCard(
+                        time = timeStr,
+                        amPm = amPm,
+                        days = alarm.daysOfWeek,
+                        challengeIcon = icon,
+                        challengeText = if (alarm.challengeType == "None") "No Challenge" else "${alarm.challengeType} Challenge",
+                        isActive = alarm.isActive,
+                        onToggle = { isChecked ->
+                            viewModel?.update(alarm.copy(isActive = isChecked))
+                        },
+                        onClick = { onEditAlarm(alarm) }
+                    )
+                }
             }
             
             item {
