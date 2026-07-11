@@ -39,6 +39,34 @@ fun StrictClockApp(isWakeUp: Boolean = false, challengeType: String = "None", qr
     var currentScreen by remember { mutableStateOf(if (isWakeUp) "WakeUp" else if (!hasAllPermissions) "Permissions" else "Clock") }
     var selectedAlarm by remember { mutableStateOf<com.hotaro.strictclock.data.AlarmEntity?>(null) }
     
+    var activeChallengeType by remember { mutableStateOf(challengeType) }
+    var activeQrCodeData by remember { mutableStateOf(qrCodeData) }
+    var activeQrCodeName by remember { mutableStateOf(qrCodeName) }
+    var activeCameraObject by remember { mutableStateOf(cameraObject) }
+    var activeSoundUri by remember { mutableStateOf("") }
+    var activeVibrationEnabled by remember { mutableStateOf(true) }
+
+    val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                if (com.hotaro.strictclock.service.AlarmService.isRinging) {
+                    currentScreen = "WakeUp"
+                    activeChallengeType = com.hotaro.strictclock.service.AlarmService.currentChallengeType
+                    activeQrCodeData = com.hotaro.strictclock.service.AlarmService.currentQrCodeData
+                    activeQrCodeName = com.hotaro.strictclock.service.AlarmService.currentQrCodeName
+                    activeCameraObject = com.hotaro.strictclock.service.AlarmService.currentCameraObject
+                    activeSoundUri = com.hotaro.strictclock.service.AlarmService.currentSoundUri
+                    activeVibrationEnabled = com.hotaro.strictclock.service.AlarmService.currentVibrationEnabled
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+    
     val app = context.applicationContext as StrictClockApplication
     val alarmViewModel: AlarmViewModel = viewModel(
         factory = AlarmViewModelFactory(app.repository, app.scheduler)
@@ -173,14 +201,15 @@ fun StrictClockApp(isWakeUp: Boolean = false, challengeType: String = "None", qr
                     )
                     "Setup" -> SetupAlarmScreen(viewModel = alarmViewModel, alarm = selectedAlarm, onBack = { currentScreen = "Alarms" })
                     "WakeUp" -> {
-                        val soundUri = (context as android.app.Activity).intent.getStringExtra("SOUND_URI") ?: ""
-                        val vibrationEnabled = context.intent.getBooleanExtra("VIBRATION_ENABLED", true)
+                        val activity = context as android.app.Activity
+                        val soundUri = if (activeSoundUri.isNotEmpty()) activeSoundUri else activity.intent.getStringExtra("SOUND_URI") ?: ""
+                        val vibrationEnabled = if (com.hotaro.strictclock.service.AlarmService.isRinging) activeVibrationEnabled else activity.intent.getBooleanExtra("VIBRATION_ENABLED", true)
                         
                         WakeUpScreen(
-                            challengeType = challengeType, 
-                            qrCodeData = qrCodeData, 
-                            qrCodeName = qrCodeName,
-                            cameraObject = cameraObject,
+                            challengeType = activeChallengeType, 
+                            qrCodeData = activeQrCodeData, 
+                            qrCodeName = activeQrCodeName,
+                            cameraObject = activeCameraObject,
                             onStopAlarm = {
                                 val serviceIntent = android.content.Intent(context, com.hotaro.strictclock.service.AlarmService::class.java)
                                 context.stopService(serviceIntent)
@@ -199,21 +228,21 @@ fun StrictClockApp(isWakeUp: Boolean = false, challengeType: String = "None", qr
                                     prefs.edit().putInt("wake_up_streak", newStreak).putString("last_streak_date", today).apply()
                                 }
                                 
-                                context.finish()
+                                activity.finish()
                             },
                             onSnoozeAlarm = {
                                 val serviceIntent = android.content.Intent(context, com.hotaro.strictclock.service.AlarmService::class.java)
                                 context.stopService(serviceIntent)
                                 
-                                val alarmId = context.intent.getIntExtra("ALARM_ID", -1)
+                                val alarmId = if (com.hotaro.strictclock.service.AlarmService.isRinging) com.hotaro.strictclock.service.AlarmService.currentAlarmId else activity.intent.getIntExtra("ALARM_ID", -1)
                                 val intent = android.content.Intent(context, com.hotaro.strictclock.service.AlarmReceiver::class.java).apply {
                                     putExtra("ALARM_ID", alarmId)
-                                    putExtra("CHALLENGE_TYPE", challengeType)
+                                    putExtra("CHALLENGE_TYPE", activeChallengeType)
                                     putExtra("SOUND_URI", soundUri)
                                     putExtra("VIBRATION_ENABLED", vibrationEnabled)
-                                    putExtra("QR_CODE_DATA", qrCodeData)
-                                    putExtra("QR_CODE_NAME", qrCodeName)
-                                    putExtra("CAMERA_OBJECT", cameraObject)
+                                    putExtra("QR_CODE_DATA", activeQrCodeData)
+                                    putExtra("QR_CODE_NAME", activeQrCodeName)
+                                    putExtra("CAMERA_OBJECT", activeCameraObject)
                                 }
                                 
                                 val pendingIntent = android.app.PendingIntent.getBroadcast(
@@ -227,7 +256,7 @@ fun StrictClockApp(isWakeUp: Boolean = false, challengeType: String = "None", qr
                                 val triggerTime = System.currentTimeMillis() + 5 * 60 * 1000
                                 alarmManager.setAlarmClock(android.app.AlarmManager.AlarmClockInfo(triggerTime, pendingIntent), pendingIntent)
                                 
-                                context.finish()
+                                activity.finish()
                             }
                         )
                     }

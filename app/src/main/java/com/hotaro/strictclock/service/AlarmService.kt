@@ -22,6 +22,17 @@ class AlarmService : Service() {
     private var mediaPlayer: MediaPlayer? = null
     private var vibrator: Vibrator? = null
 
+    companion object {
+        var isRinging = false
+        var currentChallengeType = "None"
+        var currentQrCodeData = ""
+        var currentQrCodeName = ""
+        var currentCameraObject = ""
+        var currentAlarmId = -1
+        var currentSoundUri = ""
+        var currentVibrationEnabled = true
+    }
+
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
@@ -47,6 +58,15 @@ class AlarmService : Service() {
         val qrCodeData = intent?.getStringExtra("QR_CODE_DATA") ?: ""
         val qrCodeName = intent?.getStringExtra("QR_CODE_NAME") ?: ""
         val cameraObject = intent?.getStringExtra("CAMERA_OBJECT") ?: ""
+
+        isRinging = true
+        currentAlarmId = alarmId
+        currentChallengeType = challengeType
+        currentQrCodeData = qrCodeData
+        currentQrCodeName = qrCodeName
+        currentCameraObject = cameraObject
+        currentSoundUri = soundUriStr
+        currentVibrationEnabled = vibrationEnabled
 
         // Full screen intent to launch WakeUp UI
         val fullScreenIntent = Intent(this, MainActivity::class.java).apply {
@@ -140,6 +160,7 @@ class AlarmService : Service() {
         mediaPlayer?.stop()
         mediaPlayer?.release()
         vibrator?.cancel()
+        isRinging = false
         super.onDestroy()
     }
 

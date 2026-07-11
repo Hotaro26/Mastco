@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import com.hotaro.strictclock.ui.theme.StrictClockTheme
 import androidx.compose.ui.Modifier
 import com.hotaro.strictclock.ui.StrictClockApp
+import com.hotaro.strictclock.service.AlarmService
 
 import androidx.core.view.WindowCompat
 
@@ -26,11 +27,11 @@ class MainActivity : ComponentActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             window.isNavigationBarContrastEnforced = false
         }
-        val isWakeUp = intent.getBooleanExtra("IS_WAKE_UP", false)
-        val challengeType = intent.getStringExtra("CHALLENGE_TYPE") ?: "None"
-        val qrCodeData = intent.getStringExtra("QR_CODE_DATA") ?: ""
-        val qrCodeName = intent.getStringExtra("QR_CODE_NAME") ?: ""
-        val cameraObject = intent.getStringExtra("CAMERA_OBJECT") ?: ""
+        val isWakeUp = intent.getBooleanExtra("IS_WAKE_UP", false) || AlarmService.isRinging
+        val challengeType = intent.getStringExtra("CHALLENGE_TYPE")?.takeIf { it != "None" } ?: if (AlarmService.isRinging) AlarmService.currentChallengeType else "None"
+        val qrCodeData = intent.getStringExtra("QR_CODE_DATA")?.takeIf { it.isNotEmpty() } ?: if (AlarmService.isRinging) AlarmService.currentQrCodeData else ""
+        val qrCodeName = intent.getStringExtra("QR_CODE_NAME")?.takeIf { it.isNotEmpty() } ?: if (AlarmService.isRinging) AlarmService.currentQrCodeName else ""
+        val cameraObject = intent.getStringExtra("CAMERA_OBJECT")?.takeIf { it.isNotEmpty() } ?: if (AlarmService.isRinging) AlarmService.currentCameraObject else ""
 
         if (isWakeUp) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
