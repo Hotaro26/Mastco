@@ -87,7 +87,7 @@ fun StrictClockApp(isWakeUp: Boolean = false, challengeType: String = "None", qr
             }
             
             Scaffold(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).fillMaxHeight(),
                 contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top),
                 bottomBar = {
                     if (!isTablet && showNavigation) {
@@ -221,10 +221,12 @@ fun StrictClockApp(isWakeUp: Boolean = false, challengeType: String = "None", qr
 @Composable
 fun MainNavigationBar(currentScreen: String, onNavigate: (String) -> Unit) {
     NavigationBar(
-        containerColor = surfaceContainerLowDark,
-        tonalElevation = 0.dp
+        containerColor = androidx.compose.ui.graphics.Color.Transparent,
+        tonalElevation = 0.dp,
+        modifier = Modifier.navigationBarsPadding(),
+        windowInsets = androidx.compose.foundation.layout.WindowInsets(0,0,0,0)
     ) {
-        NavigationBarItem(
+            NavigationBarItem(
             selected = currentScreen == "Clock",
             onClick = { onNavigate("Clock") },
             icon = { 

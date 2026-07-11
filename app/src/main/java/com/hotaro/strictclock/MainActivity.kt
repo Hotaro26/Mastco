@@ -13,12 +13,13 @@ import androidx.compose.ui.Modifier
 import com.hotaro.strictclock.ui.StrictClockApp
 import com.hotaro.strictclock.service.AlarmService
 
+import androidx.activity.enableEdgeToEdge
 import androidx.core.view.WindowCompat
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = android.graphics.Color.TRANSPARENT
         window.navigationBarColor = android.graphics.Color.TRANSPARENT
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
