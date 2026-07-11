@@ -1,0 +1,252 @@
+package com.hotaro.strictclock.ui
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.Alarm
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.QrCodeScanner
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material.icons.outlined.Schedule
+import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material.icons.outlined.Calculate
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.hotaro.strictclock.ui.theme.*
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ClockDashboard(viewModel: AlarmViewModel? = null, onNavigateToSetup: () -> Unit = {}, onEditAlarm: (com.hotaro.strictclock.data.AlarmEntity) -> Unit = {}) {
+    val alarms by viewModel?.allAlarms?.collectAsState() ?: remember { mutableStateOf(emptyList()) }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { 
+                    Text("Alarms", fontWeight = FontWeight.Bold, color = onSurfaceDark, fontSize = 22.sp)
+                },
+                actions = {
+                    IconButton(onClick = { /* TODO */ }) {
+                        Icon(Icons.Default.MoreVert, contentDescription = "Menu", tint = onSurfaceDark)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = backgroundDark
+                )
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onNavigateToSetup,
+                shape = RoundedCornerShape(24.dp), // Squircle shape from design
+                containerColor = tertiaryDark, // Pinkish color from design
+                contentColor = onTertiaryDark,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .size(80.dp) // Large FAB
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add Alarm", modifier = Modifier.size(32.dp))
+            }
+        },
+        containerColor = backgroundDark
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            
+            // System Clock removed from here
+            
+            // Dynamic Alarm Cards
+            items(alarms) { alarm ->
+                val amPm = if (alarm.timeHour >= 12) "PM" else "AM"
+                val displayHour = if (alarm.timeHour % 12 == 0) 12 else alarm.timeHour % 12
+                val timeStr = String.format("%02d:%02d", displayHour, alarm.timeMinute)
+                
+                val icon = when (alarm.challengeType) {
+                    "Math" -> Icons.Outlined.Calculate
+                    "QR" -> Icons.Outlined.QrCodeScanner
+                    else -> null
+                }
+                
+                AlarmCard(
+                    time = timeStr,
+                    amPm = amPm,
+                    days = alarm.daysOfWeek,
+                    challengeIcon = icon,
+                    challengeText = alarm.challengeType + " Challenge",
+                    isActive = alarm.isActive,
+                    onToggle = { isChecked ->
+                        viewModel?.update(alarm.copy(isActive = isChecked))
+                    },
+                    onClick = { onEditAlarm(alarm) }
+                )
+            }
+            
+            item {
+                Spacer(modifier = Modifier.height(100.dp)) // Space for FAB
+            }
+        }
+    }
+}
+
+@Composable
+fun SystemClockCard() {
+    var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
+    
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(1000)
+            currentTime = System.currentTimeMillis()
+        }
+    }
+    
+    val calendar = java.util.Calendar.getInstance().apply { timeInMillis = currentTime }
+    val isAm = calendar.get(java.util.Calendar.AM_PM) == java.util.Calendar.AM
+    val amPmStr = if (isAm) "AM" else "PM"
+    var hour = calendar.get(java.util.Calendar.HOUR)
+    if (hour == 0) hour = 12
+    val minute = calendar.get(java.util.Calendar.MINUTE)
+    
+    val timeStr = String.format("%02d:%02d", hour, minute)
+    
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(fontSize = 80.sp, fontWeight = FontWeight.Medium, color = primaryDark)) {
+                    append(timeStr)
+                }
+                withStyle(style = SpanStyle(fontSize = 24.sp, fontWeight = FontWeight.Normal, color = onSurfaceVariantDark)) {
+                    append(" $amPmStr")
+                }
+            }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        val dayStr = android.text.format.DateFormat.format("EEEE, MMM d", currentTime).toString()
+        Text(
+            text = dayStr,
+            style = MaterialTheme.typography.bodyLarge.copy(color = onSurfaceVariantDark)
+        )
+    }
+}
+
+@Composable
+fun AlarmCard(
+    time: String, 
+    amPm: String, 
+    days: String, 
+    challengeIcon: androidx.compose.ui.graphics.vector.ImageVector?, 
+    challengeText: String, 
+    isActive: Boolean,
+    onToggle: (Boolean) -> Unit = {},
+    onClick: () -> Unit = {}
+) {
+    var checked by remember(isActive) { mutableStateOf(isActive) }
+    
+    Card(
+        modifier = Modifier.fillMaxWidth().clickable { onClick() },
+        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = surfaceContainerHighDark
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 28.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontSize = 36.sp, fontWeight = FontWeight.Normal, color = if(checked) onSurfaceDark else onSurfaceVariantDark)) {
+                            append(time)
+                        }
+                        withStyle(style = SpanStyle(fontSize = 18.sp, fontWeight = FontWeight.Normal, color = onSurfaceVariantDark)) {
+                            append(" $amPm")
+                        }
+                    }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = days,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = onSurfaceVariantDark
+                        )
+                    )
+                    
+                    Text(
+                        text = "  •  ",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = outlineVariantDark
+                        )
+                    )
+                    
+                    if (challengeIcon != null) {
+                        Icon(
+                            imageVector = challengeIcon,
+                            contentDescription = challengeText,
+                            tint = onSurfaceVariantDark,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                    }
+                    
+                    Text(
+                        text = challengeText,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = onSurfaceVariantDark
+                        )
+                    )
+                }
+            }
+            Switch(
+                checked = checked,
+                onCheckedChange = { 
+                    checked = it
+                    onToggle(it)
+                },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = primaryDark,
+                    checkedTrackColor = primaryContainerDark,
+                    uncheckedThumbColor = outlineDark,
+                    uncheckedTrackColor = surfaceContainerHighestDark,
+                    uncheckedBorderColor = outlineDark
+                )
+            )
+        }
+    }
+}

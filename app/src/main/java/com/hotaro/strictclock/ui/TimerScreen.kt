@@ -1,0 +1,283 @@
+package com.hotaro.strictclock.ui
+
+import android.content.Intent
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Alarm
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.hotaro.strictclock.service.TimerManager
+import com.hotaro.strictclock.service.TimerService
+import com.hotaro.strictclock.ui.theme.*
+import kotlinx.coroutines.delay
+
+@Composable
+fun TimerScreen() {
+    var selectedTab by remember { mutableStateOf(0) }
+    val context = LocalContext.current
+    
+    val timeRemaining by TimerManager.timeRemaining.collectAsState()
+    val isRunning by TimerManager.isRunning.collectAsState()
+
+    var inputMinutes by remember { mutableStateOf("15") }
+    var inputSeconds by remember { mutableStateOf("00") }
+    
+    var stopwatchRunning by remember { mutableStateOf(false) }
+    var stopwatchTime by remember { mutableStateOf(0L) }
+    
+    LaunchedEffect(stopwatchRunning) {
+        if (stopwatchRunning) {
+            var lastTime = System.currentTimeMillis()
+            while (stopwatchRunning) {
+                delay(10)
+                val now = System.currentTimeMillis()
+                stopwatchTime += (now - lastTime)
+                lastTime = now
+            }
+        }
+    }
+    
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        TabRow(
+            selectedTabIndex = selectedTab,
+            containerColor = Color.Transparent,
+            contentColor = onSurfaceDark,
+            indicator = { tabPositions ->
+                SecondaryIndicator(
+                    Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
+                    color = primaryDark
+                )
+            },
+            divider = { }
+        ) {
+            Tab(
+                selected = selectedTab == 0,
+                onClick = { selectedTab = 0 },
+                text = { Text("Timer", fontSize = 18.sp, fontWeight = if(selectedTab == 0) FontWeight.Bold else FontWeight.Normal) }
+            )
+            Tab(
+                selected = selectedTab == 1,
+                onClick = { selectedTab = 1 },
+                text = { Text("Stopwatch", fontSize = 18.sp, fontWeight = if(selectedTab == 1) FontWeight.Bold else FontWeight.Normal) }
+            )
+        }
+        
+        if (selectedTab == 0) {
+            // Timer View
+            if (!isRunning && timeRemaining == 0L) {
+                Spacer(modifier = Modifier.height(64.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    OutlinedTextField(
+                        value = inputMinutes,
+                        onValueChange = { if (it.length <= 2) inputMinutes = it },
+                        modifier = Modifier.width(100.dp),
+                        textStyle = LocalTextStyle.current.copy(fontSize = 48.sp, textAlign = TextAlign.Center),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = primaryDark,
+                            unfocusedBorderColor = outlineDark,
+                            focusedTextColor = primaryDark,
+                            unfocusedTextColor = onSurfaceDark
+                        )
+                    )
+                    Text(" : ", fontSize = 48.sp, color = primaryDark)
+                    OutlinedTextField(
+                        value = inputSeconds,
+                        onValueChange = { if (it.length <= 2) inputSeconds = it },
+                        modifier = Modifier.width(100.dp),
+                        textStyle = LocalTextStyle.current.copy(fontSize = 48.sp, textAlign = TextAlign.Center),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = primaryDark,
+                            unfocusedBorderColor = outlineDark,
+                            focusedTextColor = primaryDark,
+                            unfocusedTextColor = onSurfaceDark
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Set timer (MM:SS)", color = onSurfaceVariantDark, fontSize = 20.sp)
+                
+                Spacer(modifier = Modifier.weight(1f))
+                
+                // Big FAB for start
+                Surface(
+                    shape = CircleShape,
+                    color = primaryDark,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .padding(bottom = 16.dp)
+                ) {
+                    IconButton(onClick = {
+                        val m = inputMinutes.toLongOrNull() ?: 0L
+                        val s = inputSeconds.toLongOrNull() ?: 0L
+                        val totalMs = (m * 60 + s) * 1000
+                        if (totalMs > 0) {
+                            val intent = Intent(context, TimerService::class.java)
+                            intent.action = TimerService.ACTION_START
+                            intent.putExtra(TimerService.EXTRA_DURATION_MS, totalMs)
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                context.startForegroundService(intent)
+                            } else {
+                                context.startService(intent)
+                            }
+                        }
+                    }) {
+                        Icon(Icons.Default.PlayArrow, contentDescription = "Start", tint = onPrimaryDark, modifier = Modifier.size(48.dp))
+                    }
+                }
+            } else {
+                val maxTime by TimerManager.maxTime.collectAsState()
+                
+                Spacer(modifier = Modifier.weight(1f))
+                
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(32.dp),
+                    color = surfaceContainerLowDark
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            val maxMins = maxTime / 60000
+                            Text("${maxMins}m timer", fontSize = 24.sp, color = onSurfaceDark)
+                            Surface(
+                                shape = CircleShape,
+                                color = surfaceContainerHighDark,
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                IconButton(onClick = {
+                                    val intent = Intent(context, TimerService::class.java)
+                                    intent.action = TimerService.ACTION_STOP
+                                    context.startService(intent)
+                                }) {
+                                    Icon(Icons.Filled.Close, contentDescription = "Close", tint = onSurfaceVariantDark, modifier = Modifier.size(16.dp))
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        Box(
+                            modifier = Modifier.size(280.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            // Circular Progress
+                            val progress = if (maxTime > 0) timeRemaining.toFloat() / maxTime.toFloat() else 0f
+                            val outlineColor = outlineVariantDark
+                            val progressColor = primaryDark
+                            
+                            androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+                                drawArc(
+                                    color = outlineColor,
+                                    startAngle = 0f,
+                                    sweepAngle = 360f,
+                                    useCenter = false,
+                                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 8.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                                )
+                                drawArc(
+                                    color = progressColor,
+                                    startAngle = -90f,
+                                    sweepAngle = 360f * progress,
+                                    useCenter = false,
+                                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 8.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                                )
+                            }
+
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                val seconds = (timeRemaining / 1000) % 60
+                                val minutes = (timeRemaining / (1000 * 60)) % 60
+                                val hours = (timeRemaining / (1000 * 60 * 60))
+                                
+                                val timeStr = if (hours > 0) {
+                                    String.format("%02d:%02d:%02d", hours, minutes, seconds)
+                                } else {
+                                    String.format("%d:%02d", minutes, seconds)
+                                }
+                                Text(timeStr, fontSize = 72.sp, fontWeight = FontWeight.Normal, color = onSurfaceDark)
+                                
+                                IconButton(onClick = {
+                                    val intent = Intent(context, TimerService::class.java)
+                                    intent.action = TimerService.ACTION_RESET
+                                    context.startService(intent)
+                                }) {
+                                    Icon(Icons.Default.Refresh, contentDescription = "Reset", tint = onSurfaceVariantDark, modifier = Modifier.size(32.dp))
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(48.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            val playPauseColor = if (isRunning) primaryContainerDark else primaryDark
+                            val playPauseIconColor = if (isRunning) onPrimaryContainerDark else onPrimaryDark
+                            
+                            Button(
+                                onClick = {
+                                    val intent = Intent(context, TimerService::class.java)
+                                    intent.action = if (isRunning) TimerService.ACTION_PAUSE else TimerService.ACTION_RESUME
+                                    context.startService(intent)
+                                },
+                                modifier = Modifier.width(160.dp).height(80.dp),
+                                shape = androidx.compose.foundation.shape.RoundedCornerShape(32.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = playPauseColor, contentColor = playPauseIconColor)
+                            ) {
+                                Icon(
+                                    imageVector = if (isRunning) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                    contentDescription = "Play/Pause",
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+                
+                Spacer(modifier = Modifier.weight(1f))
+            }
+        } else {
+            // Stopwatch View
+            StopwatchTabContent()
+        }
+    }
+}
