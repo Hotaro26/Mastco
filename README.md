@@ -6,12 +6,19 @@ Mascot makes you do annoying stuff like solving math problems, scanning random Q
 
 oh, and if you hate oversleeping and actually find this app useful, dropping a star on the repo would be sick.
 ## Screenshots
-## 📱 Screenshots
 
 | | | | | |
 |:---:|:---:|:---:|:---:|:---:|
 | <img width="200" alt="Screenshot_20260711-215802_mascot" src="https://github.com/user-attachments/assets/7adcd3ff-e535-423d-9582-6336c8ad6f75" /> | <img width="200" alt="Screenshot_20260711-215807_mascot" src="https://github.com/user-attachments/assets/6b74c0fb-a328-492f-bee0-4e6b016bee27" /> | <img width="200" alt="Screenshot_20260711-182217_mastco" src="https://github.com/user-attachments/assets/8cbe5b5e-1f39-4e05-9bba-2b2bf5346353" /> | <img width="200" alt="Screenshot_20260711-182400_mastco" src="https://github.com/user-attachments/assets/2b074c5d-5c27-41c6-ba2e-989f2195ca3e" /> | <img width="200" alt="Screenshot_20260711-182600_mastco" src="https://github.com/user-attachments/assets/28e67025-5613-4b23-870d-a1c92d5fe6d4" /> |
 | <img width="200" alt="Screenshot_20260711-203449_System UI" src="https://github.com/user-attachments/assets/28a1df36-242c-49b8-88ba-9c51a757ef90" /> | <img width="200" alt="Screenshot_20260711-215726_mascot" src="https://github.com/user-attachments/assets/ae9b815e-7032-4385-aecd-f15c005e8a2a" /> | <img width="200" alt="Screenshot_20260711-215730_mascot" src="https://github.com/user-attachments/assets/11f45e11-27f8-4639-af57-8bf10cb1ffeb" /> | <img width="200" alt="Screenshot_20260711-215735_mascot" src="https://github.com/user-attachments/assets/e58de9a4-ffcd-402c-97c7-7a6614a6679d" /> | <img width="200" alt="Screenshot_20260711-215739_mascot" src="https://github.com/user-attachments/assets/2da14be3-66c1-4b54-946f-0d728ba749e1" /> |
+
+## Tablet ui
+
+| | | |
+|:---:|:---:|:---:|
+| <img width="300" alt="Screenshot_20260711-220644_mascot" src="https://github.com/user-attachments/assets/977a7b2d-b7d1-4492-b2cb-ad6849227eed" /> | <img width="300" alt="Screenshot_20260711-220540_mascot" src="https://github.com/user-attachments/assets/f04bb148-f266-4a79-bedc-095fc4fc0f93" /> | <img width="300" alt="Screenshot_20260711-220556_mascot" src="https://github.com/user-attachments/assets/4be1607d-bf21-49d4-9993-6eedec8916bd" /> |
+| <img width="300" alt="Screenshot_20260711-220609_mascot" src="https://github.com/user-attachments/assets/eca9f55c-c7ca-4cf7-91a7-1229c392ef68" /> | <img width="300" alt="Screenshot_20260711-220629_mascot" src="https://github.com/user-attachments/assets/331936a5-c852-4a90-b157-1114ccaed223" /> | <img width="300" alt="Screenshot_20260711-220637_mascot" src="https://github.com/user-attachments/assets/7a81fbb2-2b89-4745-b681-51f3dc9c56d3" /> |
+
 
 
 ### What's under the hood?
