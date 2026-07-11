@@ -40,7 +40,12 @@ import com.hotaro.strictclock.ui.theme.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClockDashboard(viewModel: AlarmViewModel? = null, onNavigateToSetup: () -> Unit = {}, onEditAlarm: (com.hotaro.strictclock.data.AlarmEntity) -> Unit = {}) {
-    val alarms by viewModel?.allAlarms?.collectAsState() ?: remember { mutableStateOf(emptyList()) }
+    val rawAlarms by viewModel?.allAlarms?.collectAsState() ?: remember { mutableStateOf(emptyList()) }
+    val alarms = remember(rawAlarms) {
+        rawAlarms.sortedBy { alarm ->
+            if (alarm.isActive) com.hotaro.strictclock.utils.AlarmUtils.getNextTriggerTime(alarm) else Long.MAX_VALUE
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -119,7 +124,7 @@ fun ClockDashboard(viewModel: AlarmViewModel? = null, onNavigateToSetup: () -> U
 }
 
 @Composable
-fun SystemClockCard() {
+fun SystemClockCard(nextAlarm: com.hotaro.strictclock.data.AlarmEntity? = null) {
     var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
     
     LaunchedEffect(Unit) {
@@ -158,6 +163,41 @@ fun SystemClockCard() {
             text = dayStr,
             style = MaterialTheme.typography.bodyLarge.copy(color = onSurfaceVariantDark)
         )
+        
+        if (nextAlarm != null) {
+            Spacer(modifier = Modifier.height(16.dp))
+            val context = androidx.compose.ui.platform.LocalContext.current
+            val nextTimeStr = String.format("%02d:%02d", if (nextAlarm.timeHour % 12 == 0) 12 else nextAlarm.timeHour % 12, nextAlarm.timeMinute)
+            val nextAmPm = if (nextAlarm.timeHour >= 12) "PM" else "AM"
+            
+            Surface(
+                shape = RoundedCornerShape(24.dp),
+                color = surfaceContainerHighDark,
+                modifier = Modifier.clickable {
+                    val triggerTime = com.hotaro.strictclock.utils.AlarmUtils.getNextTriggerTime(nextAlarm)
+                    val diff = triggerTime - System.currentTimeMillis()
+                    val minutesLeft = java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(diff)
+                    val hoursLeft = minutesLeft / 60
+                    val minLeft = minutesLeft % 60
+                    val toastMsg = if (hoursLeft > 0) "Alarm rings in $hoursLeft hr $minLeft min" else "Alarm rings in $minLeft min"
+                    android.widget.Toast.makeText(context, toastMsg, android.widget.Toast.LENGTH_SHORT).show()
+                }
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Icon(Icons.Outlined.Alarm, contentDescription = null, tint = primaryDark, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "$nextTimeStr $nextAmPm",
+                        color = onSurfaceDark,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp
+                    )
+                }
+            }
+        }
     }
 }
 

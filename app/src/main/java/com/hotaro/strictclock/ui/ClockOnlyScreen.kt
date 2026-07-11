@@ -15,12 +15,17 @@ import com.hotaro.strictclock.ui.theme.*
 import kotlinx.coroutines.delay
 
 @Composable
-fun ClockOnlyScreen() {
+fun ClockOnlyScreen(viewModel: AlarmViewModel? = null) {
+    val rawAlarms by viewModel?.allAlarms?.collectAsState(initial = emptyList()) ?: remember { mutableStateOf(emptyList()) }
+    val nextAlarm = remember(rawAlarms) {
+        rawAlarms.filter { it.isActive }.minByOrNull { com.hotaro.strictclock.utils.AlarmUtils.getNextTriggerTime(it) }
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SystemClockCard()
+        SystemClockCard(nextAlarm = nextAlarm)
     }
 }

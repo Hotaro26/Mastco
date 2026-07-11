@@ -159,7 +159,7 @@ fun StrictClockApp(isWakeUp: Boolean = false, challengeType: String = "None", qr
             ) { targetScreen ->
                 when (targetScreen) {
                     "Permissions" -> PermissionsScreen(onComplete = { currentScreen = "Clock" })
-                    "Clock" -> ClockOnlyScreen()
+                    "Clock" -> ClockOnlyScreen(viewModel = alarmViewModel)
                     "Alarms" -> ClockDashboard(
                         viewModel = alarmViewModel, 
                         onNavigateToSetup = { 
