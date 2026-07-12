@@ -51,8 +51,14 @@ fun AppIconsScreen(onBack: () -> Unit) {
             TopAppBar(
                 title = { Text("App Icons", fontWeight = FontWeight.Bold, color = onSurfaceDark, fontSize = 20.sp) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = onSurfaceDark)
+                    Surface(
+                        shape = androidx.compose.foundation.shape.CircleShape,
+                        color = primaryContainerDark,
+                        modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 8.dp).size(40.dp)
+                    ) {
+                        IconButton(onClick = onBack, modifier = Modifier.fillMaxSize()) {
+                            Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = onPrimaryContainerDark, modifier = Modifier.size(24.dp))
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundDark)

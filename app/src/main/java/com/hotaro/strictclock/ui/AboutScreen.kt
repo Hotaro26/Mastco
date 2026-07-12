@@ -1,6 +1,7 @@
 package com.hotaro.strictclock.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -62,11 +63,23 @@ fun AboutScreen(onBack: () -> Unit) {
         ) {
             Spacer(modifier = Modifier.height(32.dp))
             
+            val mascotIcons = listOf(
+                R.mipmap.mascot_icon1,
+                R.mipmap.mascot_icon2,
+                R.mipmap.mascot_icon3,
+                R.mipmap.mascot_icon4,
+                R.mipmap.mascot_icon5
+            )
+            var currentMascotIndex by remember { mutableIntStateOf(0) }
+            
             Image(
-                painter = painterResource(id = R.drawable.about_image),
+                painter = painterResource(id = mascotIcons[currentMascotIndex]),
                 contentDescription = "App Icon",
                 contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-                modifier = Modifier.size(100.dp).clip(CircleShape)
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .clickable { currentMascotIndex = (currentMascotIndex + 1) % mascotIcons.size }
             )
             
             Spacer(modifier = Modifier.height(16.dp))
@@ -119,6 +132,12 @@ fun AboutScreen(onBack: () -> Unit) {
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text("Developer", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Hi, I'm Hotaro! I created mascot to help us all wake up on time. Passionate about Android, sleek UI, and open-source.",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 22.sp
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                     
                     val uriHandler = LocalUriHandler.current
