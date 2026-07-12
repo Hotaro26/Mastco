@@ -4,6 +4,17 @@ sup! welcome to Mascot (formerly mastco) — it's basically this evil open-sourc
 
 Mascot makes you do annoying stuff like solving math problems, scanning random QR codes, or even walking to your bathroom to take a picture of your sink just to turn off the alarm. the AI object detection is all on-device so it's super fast and doesn't steal your data.
 
+### Key Features (Why this app is truly evil)
+- **Invincible Mode:** it uses Device Administrator privileges so you literally can't uninstall the app while the alarm is blasting. nice try though.
+- **Anti Power-Off:** leverages Accessibility Services to block you from turning off or restarting your phone when the alarm goes off. you are trapped.
+- **4 Wake-up Challenges:**
+  - **Math:** solve basic to hardcore math equations.
+  - **QR Code:** print a QR code, stick it in your bathroom, and go scan it to shut the alarm up.
+  - **Flashbang:** literally blinds you with a bright flashing screen (you can double-tap to dismiss if you're weak).
+  - **AI Object Detection:** forces you to get out of bed and take a picture of a random object (like a chair, toothbrush, grass, or even your cat).
+- **Predictive Back Gestures & Minimalist UI:** built with Jetpack Compose Material 3, squishy cards, custom mascot icons, and a super clean dark mode.
+- **Strict Mode:** locks down your alarm settings so you can't cheat and change the time 5 minutes before it rings.
+
 oh, and if you hate oversleeping and actually find this app useful, dropping a star on the repo would be sick.
 ## Screenshots
 
