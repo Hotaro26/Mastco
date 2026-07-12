@@ -128,8 +128,11 @@ fun ClockDashboard(viewModel: AlarmViewModel? = null, onNavigateToSetup: () -> U
                     )
                 }
                 
-                val amPm = if (alarm.timeHour >= 12) "PM" else "AM"
-                val displayHour = if (alarm.timeHour % 12 == 0) 12 else alarm.timeHour % 12
+                val prefs = androidx.compose.ui.platform.LocalContext.current.getSharedPreferences("strict_clock_prefs", android.content.Context.MODE_PRIVATE)
+                val is24Hour = prefs.getString("clock_format", "12") == "24"
+                
+                val amPm = if (is24Hour) "" else if (alarm.timeHour >= 12) "PM" else "AM"
+                val displayHour = if (is24Hour) alarm.timeHour else if (alarm.timeHour % 12 == 0) 12 else alarm.timeHour % 12
                 val timeStr = String.format("%02d:%02d", displayHour, alarm.timeMinute)
                 
                 val icon = when (alarm.challengeType) {
@@ -188,11 +191,16 @@ fun SystemClockCard(nextAlarm: com.hotaro.strictclock.data.AlarmEntity? = null) 
         }
     }
     
+    val prefs = androidx.compose.ui.platform.LocalContext.current.getSharedPreferences("strict_clock_prefs", android.content.Context.MODE_PRIVATE)
+    val is24Hour = prefs.getString("clock_format", "12") == "24"
+    
     val calendar = java.util.Calendar.getInstance().apply { timeInMillis = currentTime }
     val isAm = calendar.get(java.util.Calendar.AM_PM) == java.util.Calendar.AM
-    val amPmStr = if (isAm) "AM" else "PM"
-    var hour = calendar.get(java.util.Calendar.HOUR)
-    if (hour == 0) hour = 12
+    val amPmStr = if (is24Hour) "" else if (isAm) "AM" else "PM"
+    var hour = if (is24Hour) calendar.get(java.util.Calendar.HOUR_OF_DAY) else {
+        val h = calendar.get(java.util.Calendar.HOUR)
+        if (h == 0) 12 else h
+    }
     val minute = calendar.get(java.util.Calendar.MINUTE)
     
     val timeStr = String.format("%02d:%02d", hour, minute)
@@ -221,8 +229,9 @@ fun SystemClockCard(nextAlarm: com.hotaro.strictclock.data.AlarmEntity? = null) 
         if (nextAlarm != null) {
             Spacer(modifier = Modifier.height(16.dp))
             val context = androidx.compose.ui.platform.LocalContext.current
-            val nextTimeStr = String.format("%02d:%02d", if (nextAlarm.timeHour % 12 == 0) 12 else nextAlarm.timeHour % 12, nextAlarm.timeMinute)
-            val nextAmPm = if (nextAlarm.timeHour >= 12) "PM" else "AM"
+            val nextDisplayHour = if (is24Hour) nextAlarm.timeHour else if (nextAlarm.timeHour % 12 == 0) 12 else nextAlarm.timeHour % 12
+            val nextTimeStr = String.format("%02d:%02d", nextDisplayHour, nextAlarm.timeMinute)
+            val nextAmPm = if (is24Hour) "" else if (nextAlarm.timeHour >= 12) "PM" else "AM"
             
             Surface(
                 shape = RoundedCornerShape(24.dp),

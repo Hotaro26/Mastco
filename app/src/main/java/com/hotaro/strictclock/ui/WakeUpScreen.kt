@@ -54,9 +54,18 @@ fun WakeUpScreen(
     val flashbangColorsStr = prefs.getString("flashbang_colors", defaultColors) ?: defaultColors
     
     val currentTime = Calendar.getInstance()
-    val hour = currentTime.get(Calendar.HOUR_OF_DAY)
     val minute = currentTime.get(Calendar.MINUTE)
-    val timeStr = String.format("%02d:%02d", hour, minute)
+    val is24Hour = prefs.getString("clock_format", "12") == "24"
+    val amPm = if (currentTime.get(Calendar.AM_PM) == Calendar.AM) "AM" else "PM"
+    
+    val displayHour = if (is24Hour) {
+        currentTime.get(Calendar.HOUR_OF_DAY)
+    } else {
+        val h = currentTime.get(Calendar.HOUR)
+        if (h == 0) 12 else h
+    }
+    
+    val timeStr = String.format("%02d:%02d", displayHour, minute)
     val dayStr = android.text.format.DateFormat.format("EEEE, MMM d", currentTime.timeInMillis).toString()
 
     val defaultBgColor = backgroundDark

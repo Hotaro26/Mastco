@@ -33,7 +33,8 @@ fun SettingsScreen(
     onNavigateToFlashbang: () -> Unit = {},
     onNavigateToAiReadiness: () -> Unit = {},
     onNavigateToAbout: () -> Unit = {},
-    onNavigateToAppIcons: () -> Unit = {}
+    onNavigateToAppIcons: () -> Unit = {},
+    onNavigateToClockFormat: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -163,6 +164,16 @@ fun SettingsScreen(
                 showArrow = true,
                 topStart = 4.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 4.dp,
                 onClick = onNavigateToCustomisation
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            val currentClockFormat = prefs.getString("clock_format", "12") ?: "12"
+            SettingsRow(
+                icon = Icons.Outlined.Schedule,
+                title = "Clock Format",
+                subtitle = if (currentClockFormat == "12") "12-hour (AM/PM)" else "24-hour",
+                showArrow = true,
+                topStart = 4.dp, topEnd = 4.dp, bottomStart = 4.dp, bottomEnd = 4.dp,
+                onClick = onNavigateToClockFormat
             )
             Spacer(modifier = Modifier.height(2.dp))
             val activeScheme by ThemeManager.activeScheme.collectAsState()
