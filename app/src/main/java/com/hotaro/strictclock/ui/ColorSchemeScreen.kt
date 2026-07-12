@@ -1,134 +1,169 @@
 package com.hotaro.strictclock.ui
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.activity.compose.BackHandler
 import com.hotaro.strictclock.ui.theme.ThemeManager
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ColorSchemeScreen(onBack: () -> Unit) {
     BackHandler { onBack() }
     val activeScheme by ThemeManager.activeScheme.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Color Scheme", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
-                navigationIcon = {
-                    Surface(
-                        shape = CircleShape,
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 8.dp).size(40.dp)
-                    ) {
-                        IconButton(onClick = onBack, modifier = Modifier.fillMaxSize()) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(24.dp))
-                        }
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
-            )
-        },
-        containerColor = MaterialTheme.colorScheme.background
-    ) { innerPadding ->
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState())
+    ) {
+        // Custom sleek header
+        Row(
             modifier = Modifier
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState())
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text("Select your preferred color scheme", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 16.sp)
-            Spacer(modifier = Modifier.height(24.dp))
-            
+            FilledTonalIconButton(
+                onClick = onBack,
+                colors = IconButtonDefaults.filledTonalIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                )
+            ) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            }
+        }
+        
+        Text(
+            text = "Color Scheme",
+            style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(horizontal = 24.dp)
+        )
+        
+        Text(
+            text = "Select your preferred color scheme",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+        )
+        
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Dynamic Colors Card
+        ElevatedCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
+            shape = MaterialTheme.shapes.large
+        ) {
             SchemeOption(
                 title = "Dynamic (Material You)",
                 subtitle = "Follows system wallpaper colors",
                 isSelected = activeScheme == "Dynamic",
-                onClick = { ThemeManager.setScheme("Dynamic") }
+                onClick = { ThemeManager.setScheme("Dynamic") },
+                isTopLevel = true
             )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            SchemeOption(
-                title = "Strict Default",
-                subtitle = "The original mascot dark theme",
-                isSelected = activeScheme == "Strict Default",
-                onClick = { ThemeManager.setScheme("Strict Default") }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SchemeOption(
-                title = "Noctali",
-                subtitle = "Dark blue and gray tones",
-                isSelected = activeScheme == "Noctali",
-                onClick = { ThemeManager.setScheme("Noctali") }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SchemeOption(
-                title = "Lavender",
-                subtitle = "Deep purples and violets",
-                isSelected = activeScheme == "Lavender",
-                onClick = { ThemeManager.setScheme("Lavender") }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SchemeOption(
-                title = "Pink",
-                subtitle = "Vibrant pink and crimson",
-                isSelected = activeScheme == "Pink",
-                onClick = { ThemeManager.setScheme("Pink") }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SchemeOption(
-                title = "Mocha",
-                subtitle = "Warm browns and creams",
-                isSelected = activeScheme == "Mocha",
-                onClick = { ThemeManager.setScheme("Mocha") }
-            )
-            
-            Spacer(modifier = Modifier.height(32.dp))
         }
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        Text(
+            text = "Presets",
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp)
+        )
+
+        // Preset Colors Card
+        OutlinedCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.background),
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            shape = MaterialTheme.shapes.large
+        ) {
+            Column {
+                val presets = listOf(
+                    "Strict Default" to "The original mascot dark theme",
+                    "Noctali" to "Dark blue and gray tones",
+                    "Lavender" to "Deep purples and violets",
+                    "Pink" to "Vibrant pink and crimson",
+                    "Mocha" to "Warm browns and creams"
+                )
+                
+                presets.forEachIndexed { index, (title, subtitle) ->
+                    SchemeOption(
+                        title = title,
+                        subtitle = subtitle,
+                        isSelected = activeScheme == title,
+                        onClick = { ThemeManager.setScheme(title) },
+                        isTopLevel = false
+                    )
+                    
+                    if (index < presets.lastIndex) {
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(horizontal = 16.dp))
+                    }
+                }
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(48.dp))
     }
 }
 
 @Composable
-fun SchemeOption(title: String, subtitle: String, isSelected: Boolean, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() },
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
-        )
-    ) {
-        Row(modifier = Modifier.padding(16.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(title, fontWeight = FontWeight.Bold, color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface)
-                Text(subtitle, fontSize = 14.sp, color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant)
-            }
+fun SchemeOption(title: String, subtitle: String, isSelected: Boolean, onClick: () -> Unit, isTopLevel: Boolean) {
+    ListItem(
+        headlineContent = { 
+            Text(
+                title, 
+                style = MaterialTheme.typography.titleMedium,
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+            ) 
+        },
+        supportingContent = { 
+            Text(
+                subtitle, 
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            ) 
+        },
+        trailingContent = {
             if (isSelected) {
-                Icon(Icons.Outlined.Check, contentDescription = "Selected", tint = MaterialTheme.colorScheme.onPrimaryContainer)
+                Icon(
+                    Icons.Default.Check, 
+                    contentDescription = "Selected", 
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
             }
-        }
-    }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        colors = ListItemDefaults.colors(
+            containerColor = androidx.compose.ui.graphics.Color.Transparent
+        )
+    )
 }
