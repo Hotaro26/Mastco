@@ -71,6 +71,17 @@ fun StrictClockApp(isWakeUp: Boolean = false, challengeType: String = "None", qr
         }
     }
     
+    val prefs = context.getSharedPreferences("strict_clock_prefs", android.content.Context.MODE_PRIVATE)
+    val predictiveBackEnabled = prefs.getBoolean("predictive_back_enabled", false)
+    val isRootScreen = currentScreen == "Dashboard" || currentScreen == "Alarms" || currentScreen == "Clock" || currentScreen == "Stopwatch" || currentScreen == "Timer" || currentScreen == "Settings"
+    
+    if (isRootScreen && !predictiveBackEnabled) {
+        val activity = context as? android.app.Activity
+        androidx.activity.compose.BackHandler(enabled = true) {
+            activity?.finish()
+        }
+    }
+    
     val app = context.applicationContext as StrictClockApplication
     val alarmViewModel: AlarmViewModel = viewModel(
         factory = AlarmViewModelFactory(app.repository, app.scheduler)

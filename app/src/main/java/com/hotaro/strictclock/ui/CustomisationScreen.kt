@@ -58,6 +58,10 @@ fun CustomisationScreen(onBack: () -> Unit) {
         ) {
             Spacer(modifier = Modifier.height(24.dp))
             
+            var predictiveBack by remember { 
+                mutableStateOf(prefs.getBoolean("predictive_back_enabled", false)) 
+            }
+            
             SettingsRowSwitch(
                 icon = Icons.Outlined.Keyboard,
                 title = "Keyboard Time Input",
@@ -66,6 +70,19 @@ fun CustomisationScreen(onBack: () -> Unit) {
                 onCheckedChange = { 
                     useKeyboardTimeInput = it
                     prefs.edit().putBoolean("use_keyboard_time_input", it).apply()
+                }
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            SettingsRowSwitch(
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                title = "Predictive Back Gesture",
+                subtitle = "Animate app shrinking before exiting",
+                checked = predictiveBack,
+                onCheckedChange = { 
+                    predictiveBack = it
+                    prefs.edit().putBoolean("predictive_back_enabled", it).apply()
                 }
             )
         }
