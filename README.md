@@ -15,6 +15,7 @@ Mascot makes you do annoying stuff like solving math problems, scanning random Q
 - **Anti Power-Off:** leverages Accessibility Services to block you from turning off or restarting your phone when the alarm goes off. you are trapped.
 - **4 Wake-up Challenges:**
   - **Math:** solve basic to hardcore math equations.
+  - **Puzzles:** a lot of fun puzzles which actually forces your brain to get out of that unconcious state
   - **QR Code:** print a QR code, stick it in your bathroom, and go scan it to shut the alarm up.
   - **Flashbang:** literally blinds you with a bright flashing screen (you can double-tap to dismiss if you're weak).
   - **AI Object Detection:** forces you to get out of bed and take a picture of a random object (like a chair, toothbrush, grass, or even your cat).
