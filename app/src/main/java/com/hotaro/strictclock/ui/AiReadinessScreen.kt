@@ -125,8 +125,9 @@ fun AiReadinessScreen(onBack: () -> Unit) {
                 Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                     val targets = listOf(
                         "Sink", "Chair", "Mug", "Keyboard", "Shoe", "Toothbrush", 
-                        "Laptop", "Television", "Bottle", "Cup", "Spoon", "Fork", 
-                        "Plate", "Bed", "Door", "Window", "Book", "Pen", "Paper", "Poster"
+                        "Laptop", "Television", "Bottle", "Cup", "Spoon", "Fork",
+                        "Plate", "Bed", "Door", "Window", "Book", "Pen", "Paper", "Poster",
+                        "Grass", "Cat", "Dog", "Apple", "Banana", "Mouse"
                     )
                     targets.forEach { target ->
                         Row(

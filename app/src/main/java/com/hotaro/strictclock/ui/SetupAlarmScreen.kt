@@ -531,7 +531,8 @@ fun SetupAlarmScreen(viewModel: AlarmViewModel? = null, alarm: AlarmEntity? = nu
                         val allTargets = listOf(
                             "Sink", "Chair", "Mug", "Keyboard", "Shoe", "Toothbrush", 
                             "Laptop", "Television", "Bottle", "Cup", "Spoon", "Fork", 
-                            "Plate", "Bed", "Door", "Window", "Book", "Pen", "Paper", "Poster"
+                            "Plate", "Bed", "Door", "Window", "Book", "Pen", "Paper", "Poster",
+                            "Grass", "Cat", "Dog", "Apple", "Banana", "Mouse"
                         )
                         allTargets.forEach { target ->
                             Row(modifier = Modifier.fillMaxWidth().clickable { 

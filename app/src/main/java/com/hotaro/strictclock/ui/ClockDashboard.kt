@@ -53,11 +53,7 @@ fun ClockDashboard(viewModel: AlarmViewModel? = null, onNavigateToSetup: () -> U
                 title = { 
                     Text("Alarms", fontWeight = FontWeight.Bold, color = onSurfaceDark, fontSize = 22.sp)
                 },
-                actions = {
-                    IconButton(onClick = { /* TODO */ }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "Menu", tint = onSurfaceDark)
-                    }
-                },
+                actions = {},
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = backgroundDark
                 )

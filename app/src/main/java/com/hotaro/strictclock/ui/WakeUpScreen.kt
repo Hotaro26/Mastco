@@ -114,7 +114,7 @@ fun WakeUpScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("RISE", fontWeight = FontWeight.Bold, color = onSurfaceDark, fontSize = 20.sp, letterSpacing = 1.sp)
                 }
-                IconButton(onClick = { }) { Icon(Icons.Default.MoreVert, contentDescription = "Menu", tint = onSurfaceDark) }
+                // No menu button
             }
         },
         containerColor = currentFlashColor
