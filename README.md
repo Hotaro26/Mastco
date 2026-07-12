@@ -6,7 +6,7 @@
 
 # Mascot
 
-sup! welcome to Mascot (formerly mastco) — it's basically this evil open-source alarm app I made that literally *forces* you out of bed. if you're the type to snooze 50 times and end up late to everything, you kinda need this. 
+sup! welcome to Mascot (formerly mastco/matco) — it's basically this evil open-source alarm app I made that literally *forces* you out of bed. if you're the type to snooze 50 times and end up late to everything, you kinda need this. 
 
 Mascot makes you do annoying stuff like solving math problems, scanning random QR codes, or even walking to your bathroom to take a picture of your sink just to turn off the alarm. the AI object detection is all on-device so it's super fast and doesn't steal your data.
 
