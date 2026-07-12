@@ -1,5 +1,6 @@
 package com.hotaro.strictclock.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -34,26 +35,16 @@ fun SettingsScreen(
     onNavigateToAbout: () -> Unit = {},
     onNavigateToAppIcons: () -> Unit = {}
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { 
-                    Text("Settings", fontWeight = FontWeight.Bold, color = onSurfaceDark, fontSize = 20.sp)
-                },
-                actions = {},
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundDark)
-            )
-        },
-        containerColor = backgroundDark
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundDark)
+            .padding(horizontal = 16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Text("Settings", fontWeight = FontWeight.Bold, color = onSurfaceDark, fontSize = 28.sp)
+            Spacer(modifier = Modifier.height(24.dp))
             
             val context = androidx.compose.ui.platform.LocalContext.current
             val prefs = context.getSharedPreferences("strict_clock_prefs", android.content.Context.MODE_PRIVATE)
@@ -226,5 +217,4 @@ fun SettingsScreen(
             )
             Spacer(modifier = Modifier.height(32.dp))
         }
-    }
 }
