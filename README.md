@@ -1,3 +1,9 @@
+<p align="center">
+<img width="300" height="300" alt="mascot_icon" src="https://github.com/user-attachments/assets/acbc7ecb-5e85-4049-90d9-26f59540287e" />
+
+
+</p>
+
 # Mascot
 
 sup! welcome to Mascot (formerly mastco) — it's basically this evil open-source alarm app I made that literally *forces* you out of bed. if you're the type to snooze 50 times and end up late to everything, you kinda need this. 
