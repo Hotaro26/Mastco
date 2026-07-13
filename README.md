@@ -78,3 +78,13 @@ just make sure your code isn't super messy and you're good to go.
 ### License
 
 Mascot is licensed under the [MIT License](LICENSE). do whatever you want with the code, just don't blame me if you still sleep through your math problems.
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=Hotaro26%2FMascot&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Hotaro26/Mascot&type=date&theme=dark&legend=top-left&sealed_token=PbH68iOU-Q_qMTaqKhcUEkhGfRr6-3bso9AQ0M9V6woOeBoTM04E6LvdCzwys0C7lJKqhNGQzBsgySklq-o2JVmUSVbDWZz5x04gdiuDDZ0cRU6ItAtt6my08j-ybSqPtkOZYuJox4KC2Tznc7tSl4hAKU-30RflwYasq7XtDTiJ6jvFeU0s5ccEEAtv" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=Hotaro26/Mascot&type=date&legend=top-left&sealed_token=PbH68iOU-Q_qMTaqKhcUEkhGfRr6-3bso9AQ0M9V6woOeBoTM04E6LvdCzwys0C7lJKqhNGQzBsgySklq-o2JVmUSVbDWZz5x04gdiuDDZ0cRU6ItAtt6my08j-ybSqPtkOZYuJox4KC2Tznc7tSl4hAKU-30RflwYasq7XtDTiJ6jvFeU0s5ccEEAtv" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=Hotaro26/Mascot&type=date&legend=top-left&sealed_token=PbH68iOU-Q_qMTaqKhcUEkhGfRr6-3bso9AQ0M9V6woOeBoTM04E6LvdCzwys0C7lJKqhNGQzBsgySklq-o2JVmUSVbDWZz5x04gdiuDDZ0cRU6ItAtt6my08j-ybSqPtkOZYuJox4KC2Tznc7tSl4hAKU-30RflwYasq7XtDTiJ6jvFeU0s5ccEEAtv" />
+ </picture>
+</a>
