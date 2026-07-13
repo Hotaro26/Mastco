@@ -29,6 +29,8 @@ import com.hotaro.strictclock.ui.challenges.CameraChallengeView
 import com.hotaro.strictclock.ui.theme.*
 import java.util.Calendar
 import android.content.Context
+import android.content.res.Configuration
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -140,30 +142,67 @@ fun WakeUpScreen(
                     )
                 }
         ) {
-            Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            val configuration = LocalConfiguration.current
+            val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
             
-            Text("WAKE UP!", letterSpacing = 4.sp, fontWeight = FontWeight.Bold, color = onSurfaceDark, fontSize = 14.sp)
-            Text(timeStr, fontSize = 110.sp, fontWeight = FontWeight.Medium, color = primaryDark, letterSpacing = (-2).sp)
-            Text(dayStr, color = onSurfaceVariantDark, fontSize = 18.sp)
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            when (challengeType) {
-                "Math" -> MathChallengeView(mathOperations, mathDifficulty, zenModeEnabled, onSnoozeAlarm, onStopAlarm)
-                "QR Code" -> QRChallengeView(qrCodeData, qrCodeName, zenModeEnabled, onSnoozeAlarm, onStopAlarm)
-                "QR" -> QRChallengeView(qrCodeData, qrCodeName, zenModeEnabled, onSnoozeAlarm, onStopAlarm)
-                "Camera" -> CameraChallengeViewWrapper(cameraObject, zenModeEnabled, onSnoozeAlarm, onStopAlarm)
-                "Puzzle" -> PuzzleChallengeView(zenModeEnabled, onSnoozeAlarm, onStopAlarm)
-                else -> RegularWakeUpView(zenModeEnabled, onSnoozeAlarm, onStopAlarm)
+            if (isLandscape) {
+                Row(
+                    modifier = Modifier.fillMaxSize().padding(innerPadding).padding(horizontal = 24.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text("WAKE UP!", letterSpacing = 4.sp, fontWeight = FontWeight.Bold, color = onSurfaceDark, fontSize = 14.sp)
+                        Text(timeStr, fontSize = 90.sp, fontWeight = FontWeight.Medium, color = primaryDark, letterSpacing = (-2).sp)
+                        Text(dayStr, color = onSurfaceVariantDark, fontSize = 18.sp)
+                    }
+                    
+                    Spacer(modifier = Modifier.width(24.dp))
+                    
+                    Column(
+                        modifier = Modifier.weight(1f).fillMaxHeight(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        when (challengeType) {
+                            "Math" -> MathChallengeView(mathOperations, mathDifficulty, zenModeEnabled, onSnoozeAlarm, onStopAlarm)
+                            "QR Code" -> QRChallengeView(qrCodeData, qrCodeName, zenModeEnabled, onSnoozeAlarm, onStopAlarm)
+                            "QR" -> QRChallengeView(qrCodeData, qrCodeName, zenModeEnabled, onSnoozeAlarm, onStopAlarm)
+                            "Camera" -> CameraChallengeViewWrapper(cameraObject, zenModeEnabled, onSnoozeAlarm, onStopAlarm)
+                            "Puzzle" -> PuzzleChallengeView(zenModeEnabled, onSnoozeAlarm, onStopAlarm)
+                            else -> RegularWakeUpView(zenModeEnabled, onSnoozeAlarm, onStopAlarm)
+                        }
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(horizontal = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    Text("WAKE UP!", letterSpacing = 4.sp, fontWeight = FontWeight.Bold, color = onSurfaceDark, fontSize = 14.sp)
+                    Text(timeStr, fontSize = 110.sp, fontWeight = FontWeight.Medium, color = primaryDark, letterSpacing = (-2).sp)
+                    Text(dayStr, color = onSurfaceVariantDark, fontSize = 18.sp)
+                    
+                    Spacer(modifier = Modifier.height(24.dp))
+                    
+                    when (challengeType) {
+                        "Math" -> MathChallengeView(mathOperations, mathDifficulty, zenModeEnabled, onSnoozeAlarm, onStopAlarm)
+                        "QR Code" -> QRChallengeView(qrCodeData, qrCodeName, zenModeEnabled, onSnoozeAlarm, onStopAlarm)
+                        "QR" -> QRChallengeView(qrCodeData, qrCodeName, zenModeEnabled, onSnoozeAlarm, onStopAlarm)
+                        "Camera" -> CameraChallengeViewWrapper(cameraObject, zenModeEnabled, onSnoozeAlarm, onStopAlarm)
+                        "Puzzle" -> PuzzleChallengeView(zenModeEnabled, onSnoozeAlarm, onStopAlarm)
+                        else -> RegularWakeUpView(zenModeEnabled, onSnoozeAlarm, onStopAlarm)
+                    }
+                }
             }
-        }
         }
     }
 }
@@ -261,7 +300,7 @@ fun ColumnScope.MathChallengeView(operations: String, difficulty: String, zenMod
                                         else -> if (answerInput.length < 5) answerInput += key
                                     }
                                 },
-                                modifier = Modifier.weight(1f).aspectRatio(1.5f),
+                                modifier = Modifier.weight(1f).height(56.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = if (key == "OK") primaryDark else surfaceContainerHighestDark,
                                     contentColor = if (key == "OK") onPrimaryDark else onSurfaceDark
