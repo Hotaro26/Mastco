@@ -14,6 +14,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
+import com.hotaro.strictclock.ui.theme.ExpressiveSwitch
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -625,7 +626,7 @@ fun SettingsRowSwitch(
                 Text(title, color = if (enabled) onSurfaceDark else onSurfaceDark.copy(alpha = 0.5f))
                 Text(subtitle, color = if (enabled) onSurfaceVariantDark else onSurfaceVariantDark.copy(alpha = 0.5f), fontSize = 14.sp)
             }
-            Switch(checked = checked, enabled = enabled, onCheckedChange = { if (enabled) onCheckedChange(it) }, colors = SwitchDefaults.colors(checkedThumbColor = primaryDark, checkedTrackColor = primaryContainerDark))
+            ExpressiveSwitch(checked = checked, enabled = enabled, onCheckedChange = { if (enabled) onCheckedChange(it) })
         }
     }
 }

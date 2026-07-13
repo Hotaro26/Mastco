@@ -18,6 +18,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.ui.draw.scale
 import androidx.compose.material3.*
+import com.hotaro.strictclock.ui.theme.ExpressiveSwitch
+import com.hotaro.strictclock.ui.theme.ExpressiveSlider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -104,7 +106,7 @@ fun FlashbangSettingsScreen(onBack: () -> Unit) {
                     headlineContent = { Text("Enable Flashbang", style = MaterialTheme.typography.titleLarge) },
                     supportingContent = { Text("Flash the screen to wake you up", style = MaterialTheme.typography.bodyMedium) },
                     trailingContent = {
-                        Switch(checked = isEnabled, onCheckedChange = { 
+                        ExpressiveSwitch(checked = isEnabled, onCheckedChange = { 
                             isEnabled = it
                             prefs.edit().putBoolean("flashbang_enabled", it).apply()
                         })
@@ -147,7 +149,7 @@ fun FlashbangSettingsScreen(onBack: () -> Unit) {
                                 headlineContent = { Text("Full Display Brightness", style = MaterialTheme.typography.titleMedium) },
                                 supportingContent = { Text("Maximize screen brightness while ringing", style = MaterialTheme.typography.bodyMedium) },
                                 trailingContent = {
-                                    Switch(checked = fullBrightness, onCheckedChange = {
+                                    ExpressiveSwitch(checked = fullBrightness, onCheckedChange = {
                                         fullBrightness = it
                                         prefs.edit().putBoolean("flashbang_full_brightness", it).apply()
                                     })
@@ -163,7 +165,7 @@ fun FlashbangSettingsScreen(onBack: () -> Unit) {
                                 headlineContent = { Text("Double Tap to Dismiss", style = MaterialTheme.typography.titleMedium) },
                                 supportingContent = { Text("Double tap on the wake-up screen to turn off the flash", style = MaterialTheme.typography.bodyMedium) },
                                 trailingContent = {
-                                    Switch(checked = doubleTapDismiss, onCheckedChange = {
+                                    ExpressiveSwitch(checked = doubleTapDismiss, onCheckedChange = {
                                         doubleTapDismiss = it
                                         prefs.edit().putBoolean("flashbang_double_tap_dismiss", it).apply()
                                     })
@@ -178,7 +180,7 @@ fun FlashbangSettingsScreen(onBack: () -> Unit) {
                                 headlineContent = { Text("Blinking Effect", style = MaterialTheme.typography.titleMedium) },
                                 supportingContent = { Text("Strobe the screen rather than a solid color", style = MaterialTheme.typography.bodyMedium) },
                                 trailingContent = {
-                                    Switch(checked = isBlinking, onCheckedChange = {
+                                    ExpressiveSwitch(checked = isBlinking, onCheckedChange = {
                                         isBlinking = it
                                         prefs.edit().putBoolean("flashbang_blinking", it).apply()
                                     })
@@ -190,19 +192,14 @@ fun FlashbangSettingsScreen(onBack: () -> Unit) {
                                 Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
                                     Text("Blink Interval: ${blinkSpeed.toInt()} ms", style = MaterialTheme.typography.labelLarge, color = onSurfaceDark)
                                     Spacer(modifier = Modifier.height(8.dp))
-                                    Slider(
+                                    ExpressiveSlider(
                                         value = blinkSpeed,
                                         onValueChange = { 
                                             blinkSpeed = it 
                                             prefs.edit().putFloat("flashbang_blink_speed", it).apply()
                                         },
                                         valueRange = 100f..1000f,
-                                        steps = 8,
-                                        colors = SliderDefaults.colors(
-                                            thumbColor = primaryDark,
-                                            activeTrackColor = primaryDark,
-                                            inactiveTrackColor = surfaceContainerHighDark
-                                        )
+                                        steps = 8
                                     )
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),

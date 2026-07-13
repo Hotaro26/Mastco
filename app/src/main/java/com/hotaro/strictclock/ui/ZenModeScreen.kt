@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hotaro.strictclock.ui.theme.ExpressiveSwitch
 import com.hotaro.strictclock.service.AdminReceiver
 import com.hotaro.strictclock.service.AntiPowerOffService
 import com.hotaro.strictclock.ui.theme.*
@@ -117,13 +118,12 @@ fun ZenModeScreen(onBack: () -> Unit) {
                             Text("Don't allow snoozing", color = onSurfaceDark, fontSize = 18.sp, fontWeight = FontWeight.Medium)
                             Text("Forces you to wake up", color = onSurfaceVariantDark, fontSize = 14.sp)
                         }
-                        Switch(
+                        ExpressiveSwitch(
                             checked = zenModeEnabled,
                             onCheckedChange = {
                                 zenModeEnabled = it
                                 prefs.edit().putBoolean("zen_mode", it).apply()
-                            },
-                            colors = SwitchDefaults.colors(checkedThumbColor = primaryDark, checkedTrackColor = primaryContainerDark)
+                            }
                         )
                     }
 
@@ -138,7 +138,7 @@ fun ZenModeScreen(onBack: () -> Unit) {
                             Text("Invincible Mode", color = onSurfaceDark, fontSize = 18.sp, fontWeight = FontWeight.Medium)
                             Text("Prevents app uninstallation", color = onSurfaceVariantDark, fontSize = 14.sp)
                         }
-                        Switch(
+                        ExpressiveSwitch(
                             checked = invincibleModeEnabled,
                             onCheckedChange = { enabled ->
                                 if (enabled) {
@@ -152,8 +152,7 @@ fun ZenModeScreen(onBack: () -> Unit) {
                                     invincibleModeEnabled = false
                                     Toast.makeText(context, "Invincible Mode Disabled", Toast.LENGTH_SHORT).show()
                                 }
-                            },
-                            colors = SwitchDefaults.colors(checkedThumbColor = primaryDark, checkedTrackColor = primaryContainerDark)
+                            }
                         )
                     }
 
@@ -168,7 +167,7 @@ fun ZenModeScreen(onBack: () -> Unit) {
                             Text("Anti Power Off", color = onSurfaceDark, fontSize = 18.sp, fontWeight = FontWeight.Medium)
                             Text("Blocks powering off while ringing", color = onSurfaceVariantDark, fontSize = 14.sp)
                         }
-                        Switch(
+                        ExpressiveSwitch(
                             checked = antiPowerOffEnabled,
                             onCheckedChange = { enabled ->
                                 if (enabled) {
@@ -178,8 +177,7 @@ fun ZenModeScreen(onBack: () -> Unit) {
                                     Toast.makeText(context, "Please disable Accessibility in Settings", Toast.LENGTH_LONG).show()
                                     context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
                                 }
-                            },
-                            colors = SwitchDefaults.colors(checkedThumbColor = primaryDark, checkedTrackColor = primaryContainerDark)
+                            }
                         )
                     }
                 }

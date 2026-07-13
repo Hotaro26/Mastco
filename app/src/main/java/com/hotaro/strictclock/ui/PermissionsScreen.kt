@@ -162,7 +162,7 @@ fun PermissionCard(icon: androidx.compose.ui.graphics.vector.ImageVector, title:
             if (isGranted) {
                 Icon(Icons.Filled.CheckCircle, contentDescription = "Granted", tint = primaryDark)
             } else {
-                Switch(checked = false, onCheckedChange = { onClick() }, colors = SwitchDefaults.colors(uncheckedThumbColor = onSurfaceVariantDark, uncheckedTrackColor = surfaceVariantDark))
+                ExpressiveSwitch(checked = false, onCheckedChange = { onClick() })
             }
         }
     }
